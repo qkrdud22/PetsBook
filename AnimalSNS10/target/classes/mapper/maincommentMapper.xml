@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.animal.dao.MainCommentDAO">
+	<select id="selectCount" parameterType="int" resultType="int">
+		select count(*) from maincomment where ref=#{ref}
+	</select>
+
+	<select id="selectList" parameterType="MainCommentVO" resultType="MainCommentVO">
+		select * from maincomment where ref = #{ref}
+	</select>
+
+	<select id="selectByIdx" parameterType="int" resultType="MainCommentVO">
+		select * from maincomment where idx = #{idx}
+	</select>
+	<insert id="insert" parameterType="MainCommentVO">
+		insert into maincomment values (maincomment_idx_seq.nextval, #{ref}, #{name}, #{content}, SYSDATE, #{ip})
+	</insert>
+	<update id="update" parameterType="MainCommentVO">
+		update maincomment set content=#{content}, regdate=SYSDATE, ip=#{ip} where idx=#{idx}
+	</update>
+	<delete id="delete" parameterType="int">
+		delete from maincomment where idx=#{idx}
+	</delete>
+</mapper>

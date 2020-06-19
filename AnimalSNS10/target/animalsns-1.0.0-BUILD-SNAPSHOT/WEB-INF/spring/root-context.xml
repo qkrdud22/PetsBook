@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- enable use-expressions -->
+	<!-- 프로퍼티파일 사용 등록 -->
+	<context:property-placeholder
+		location="classpath:db.properties" />
+
+	<!-- <context:property-placeholder location="/WEB-INF/*.properties" /> -->
+
+	<!-- 애플리케이션이 실행될때 자동으로 실행시키고 싶은 쿼리 지정!!! 
+	<jdbc:initialize-database data-source="dataSource"> 
+		<jdbc:script location="classpath:schema.sql"/> 
+	</jdbc:initialize-database> 
+	-->
+	<!-- 
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	 -->
+
+	<!-- dataSource 설정 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${o.driver}" />
+		<property name="url" value="${o.url}" />
+		<property name="username" value="${o.username}" />
+		<property name="password" value="${o.password}" />
+	</bean>
+
+	<!-- mybatis추가 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 아래부분은 매핑할 xml파일이 있는 패키지경로를 설정한다. -->
+		<property name="typeAliasesPackage"
+			value="com.young.animal.vo" />
+		<property name="mapperLocations" value="classpath:/mapper/*.xml"/>
+	</bean>
+
+	<!-- scan for mappers and let them be autowired -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.young.animal.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
+	<!-- 
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory"
+			ref="sqlSessionFactory" />
+	</bean>
+	 -->
+	
+	
+	<!-- 트랜젝션 관리자 추가 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- ****************** 메일 보내기 빈 등록 시작 ************************** -->
+	<!-- 메일센더가 사용할 프로퍼티 등록 -->
+	<util:properties id="properties">
+		<prop key="mail.smtp.starttls.enable">true</prop>
+		<prop key="mail.smtp.auth">true</prop>
+		<prop key="mail.transport.protocol">smtp</prop>
+		<prop key="mail.debug">false</prop>
+	</util:properties>	
+	<!-- 메일 보내는 객체 등록 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+		<property name="host" value="smtp.gmail.com"/> 
+		<property name="port" value="587"/> 
+		<property name="username" value="sungnam201908@gmail.com"/> 
+		<property name="password" value="woaldjqtek2"/> 
+		<property name="javaMailProperties" ref="properties"/> 
+	</bean>
+	<!-- ****************** 메일 보내기 빈 등록 종료 ************************** -->	
+	
+	<!-- 파일 업로드로 들어오는 데이터를 처리하는 객체 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10485760" /> <!-- 10mb 제한 -->
+		<property name="maxInMemorySize" value="10485760" /> <!-- 10mb 제한 -->
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	<!-- 업로드된 파일의 저장 위치 지정 -->
+	<bean id="uploadPath" class="java.lang.String">
+		<constructor-arg  value="upload"/>
+	</bean>	
+</beans>

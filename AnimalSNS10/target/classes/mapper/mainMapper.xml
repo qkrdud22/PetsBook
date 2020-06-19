@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.animal.dao.MainDAO">
+	<select id="selectCount" resultType="int">
+		select count(*) from main
+	</select>
+	<select id="selectByIdx" parameterType="int" resultType="MainVO">
+		select * from main where idx = #{idx}
+	</select>
+	
+	<select id="selectList" parameterType="java.util.HashMap" resultType="MainVO">
+		<![CDATA[
+			select
+				Q.*
+			from
+				(select
+					rownum rnum, R.*
+				from
+					(select * from main order by idx desc) R
+				where
+					rownum<=#{endNo}) Q
+			where
+				rnum>=#{startNo}
+		]]>
+	</select>
+	<insert id="insert" parameterType="MainVO">
+		insert into main values (main_idx_seq.nextval, #{name}, #{image, jdbcType=VARCHAR}, #{content}, SYSDATE, #{ip}, #{hit})
+	</insert>
+	<update id="update" parameterType="MainVO">
+		update main set image=#{image, jdbcType=VARCHAR }, content=#{content}, regDate=SYSDATE, ip=#{ip} where idx=#{idx}
+	</update>
+	<delete id="delete" parameterType="int">
+		delete from main where idx=#{idx}
+	</delete>
+	<update id="hitUpdate" parameterType="int">
+		update main set hit = hit + 1 where idx=#{idx}
+	</update>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.animal.dao.BoardConfigDAO">
+
+	<!-- 1. 개수얻기 -->
+	<select id="selectCount" resultType="int" >
+		select count(*) from BoardConfig
+	</select>
+	<!-- 2. 1개얻기 -->
+	<select id="selectByIdx" parameterType="int" resultType="BoardConfigVO">
+		select * from BoardConfig where idx=#{idx}
+	</select>
+	
+	<select id="selectByTableName" parameterType="java.util.HashMap" resultType="BoardConfigVO">
+		select * from BoardConfig where tableName=#{tableName}
+	</select>
+	<!-- 모두 얻기 -->
+	<select id="selectList" resultType="BoardConfigVO">
+		<![CDATA[
+		select * from BoardConfig order by idx desc
+		]]>
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="BoardConfigVO">
+		INSERT INTO boardConfig VALUES
+			(boardConfig_idx_seq.nextval,#{tableName},#{boardName},#{boardInfo})
+		
+	</insert>
+	<!-- 수정 -->
+	<update id="update" parameterType="BoardConfigVO">
+		update boardConfig 
+				  set 	boardName=#{boardName},  
+		          where 
+		          	idx=#{idx}
+	</update>
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="java.util.HashMap">
+		delete from boardConfig where tableName=#{tableName}
+	</delete>
+	
+	<!-- 테이블을 자동으로 생성하는 쿼리 -->
+	<update id="createSequence1" parameterType="java.util.HashMap">
+		CREATE SEQUENCE ${tableName}_idx_seq
+	</update>	
+	<update id="createTable1" parameterType="java.util.HashMap">
+		CREATE TABLE ${tableName}(
+			idx number(10) PRIMARY KEY,
+			name varchar2(100) NOT NULL,
+			subject varchar2(255) NOT NULL,
+			content varchar2(2000) NOT NULL,
+			image varchar2(2000) NULL,
+			regDate TIMESTAMP DEFAULT SYSDATE,
+			ip varchar2(30) NOT NULL,
+			hit number(10) DEFAULT 0
+		)
+	</update>
+	<update id="createSequence2" parameterType="java.util.HashMap">
+		CREATE SEQUENCE ${tableName}_comment_idx_seq
+	</update>	
+	<update id="createTable2" parameterType="java.util.HashMap">
+		CREATE TABLE ${tableName}_comment(
+			idx number(10) PRIMARY KEY, 
+			ref number(10) NOT NULL,	
+			name varchar2(100) NOT NULL,
+			content varchar2(2000) NOT NULL,
+			regDate TIMESTAMP DEFAULT SYSDATE,
+			ip varchar2(30) NOT NULL
+		)
+	</update>
+	<!-- 테이블을 자동으로 삭제하는 쿼리 -->
+	<delete id="deleteTable" parameterType="java.util.HashMap">
+		drop table ${tableName}
+	</delete>
+	<delete id="deleteTable2" parameterType="java.util.HashMap">
+		drop table ${tableName}_comment
+	</delete>
+	<delete id="deleteSequence" parameterType="java.util.HashMap">
+		drop sequence ${tableName}_idx_seq
+	</delete>
+	<delete id="deleteSequence2" parameterType="java.util.HashMap">
+		drop sequence ${tableName}_comment_idx_seq
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.animal.dao.BoardCommentDAO">
+
+	<!-- 1. 해당 글번호의 개수 구하기 -->
+	<select id="selectCount" parameterType="java.util.HashMap" resultType="int">
+		select count(*) from ${tableName}_comment where ref=#{ref}
+	</select>
+	<!-- 2. 해당 글번호의 댓글목록 구하기 -->
+	<select id="selectList" parameterType="java.util.HashMap" resultType="BoardCommentVO">
+		select * from ${tableName}_comment where ref=#{ref}
+	</select>
+	<!-- 3. 해당 글번호 가져오기 -->
+	<select id="selectByIdx" parameterType="java.util.HashMap" resultType="BoardCommentVO">
+		select * from ${tableName}_comment where idx=#{idx}
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="BoardCommentVO">
+		insert into ${tableName}_comment values (${tableName}_comment_idx_seq.nextval,#{ref},#{name},#{content},SYSDATE,#{ip})
+	</insert>
+	<!-- 수정 -->
+	<update id="update" parameterType="BoardCommentVO">
+		update ${tableName}_comment set content=#{content}, regDate=SYSDATE, ip=#{ip} where idx=#{idx}
+	</update>
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="java.util.HashMap">
+		delete from ${tableName}_comment where idx=#{idx}
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+

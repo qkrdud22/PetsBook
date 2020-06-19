@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+<!--  <mapping path="/*" decorator="/resources/index.html"/> -->
+  
+  <!-- 제외주소 등록 -->
+<!--   <mapping path="/project/*" exclue="true"/>
+  <mapping path="/resources/*" exclue="true"/> -->
+</sitemesh>

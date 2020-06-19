@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.animal.dao.AccountDAO">
+	<select id="selectMemeberCount" resultType="int" parameterType="java.util.HashMap">
+		select count(*) from mem_role
+	</select>
+	<select id="selectMemberList" resultType="RoleAccount">
+		<![CDATA[
+		select * from mem_role
+		]]>
+	</select>
+	<insert id="account" parameterType="Account">
+		insert into mem values (#{userid}, #{pwd}, #{name}, #{email})
+	</insert>
+	<insert id="roleaccount" parameterType="RoleAccount">
+		insert into mem_role values (#{username}, #{role})
+	</insert>
+	<update id="roleupdate" parameterType="RoleAccount">
+		update mem_role set ROLE = #{role} where username = #{username}
+	</update>
+</mapper>
